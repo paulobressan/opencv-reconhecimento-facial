@@ -1,8 +1,14 @@
+# trabalhar com o opencv
 import cv2
+# recursos do sistema operacional
 import os
+# trabalhar com recursos cientificos como calculos, por exemplo calculo de media
+import numpy as np
 
-# Classificador de imagem, o arquivo é um treinamento para detecção de imagem
+# Classificador de face, o arquivo é um treinamento para detecção de face em imagens
 classificador = cv2.CascadeClassifier('haarcascade-frontalface-default.xml')
+# Classificador de olhos, o arquivo é um treinamento para detecção de olhos em imagens
+classificadorOlho = cv2.CascadeClassifier('haarcascade-eye.xml')
 
 # captura da imagem pela webcam, o metodo espera a camera que sera utilizada para a captura. As cameras disponiveis na maquina são numeradas
 camera = cv2.VideoCapture(0)
@@ -17,7 +23,7 @@ numeroAmostras = 25
 id = input('Digite o seu identificador: ')
 # controlar o tamanho da imagem
 largura, altura = 220, 220
-print(f'capturando imagens do identificador {id}')
+print(f'capturando imagens do identificador {id}') 
 
 while True:
     # capturar imagem pela webcam
@@ -38,29 +44,49 @@ while True:
     for x, y, l, a in facesDetectadas:
         # Para definir um retangulo ao redor da face detectada, temos que passar a imagem colorida, os dois eixos x e y,
         cv2.rectangle(imagem, (x, y), (x + l, y + a), (0, 0, 255))
+
+        # Capturar somente a região que contem a detecção de face para analisar se existe o olho
+        regiao = imagem[y:y + a, x:x + l]
+        # Convertendo a imagem para cinza
+        regiaoCinzaOlho = cv2.cvtColor(regiao, cv2.COLOR_BGR2GRAY)
+        # Não é necessario configurar o scale e nem o tamanho minimo porque a imagem que vamos trabalhar ja esta focada na face
+        olhosDetectados = classificadorOlho.detectMultiScale(regiao)
+        for ox, oy, ol, oa in olhosDetectados:
+            # desenhar um retangulo em volta do olho, primeiro parametro é a imagem, segundo é a posição de inicio da imagem,
+            # o terceiro é a regição onde vai ser desenhado o retangulo, o quarto é a cor e o quinto é o tamanho da borda
+            cv2.rectangle(regiao, (ox, oy), (ox + ol, oy + oa), (0, 255, 0), 2)
+
         # Se as amostrar chegar na quantidade de numeroAmostras, vamos parar o for
         if amostra >= numeroAmostras + 1:
             break
+
         # Se o programa estiver esperando uma tecla E(&) a tecla Q for teclada(comparar com hexadecimal) vamos capturar uma imagem e salva-la
         # o ord converte caracteres para hexadecimal, 0xFF = tecla "q"
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            # imagem redimensionada
-            imagemFace = cv2.resize(
+            teste = np.average([10, 20])
+            # average vai calcular a média de pixel da imagem, se o valor for muito baixa, quer dizer que a imagem é mais escura
+            if np.average(imagemCinza) > 110:
+                # imagem redimensionada
+                imagemFace = cv2.resize(
+
                 # redimensionar a imagem para capturar a região detectada
                 imagemCinza[y:y + a, x:x + l], (largura, altura))
-            # Se não existir a pasta fotos vamos criar
-            if not os.path.isdir('fotos/'):
+
+                # Se não existir a pasta fotos vamos criar
+                if not os.path.isdir('fotos/'):
                 os.mkdir('fotos/')
-            # Salvar a imagem redimensionada na pasta fotos
-            cv2.imwrite(f'fotos/pessoa.{id}.{amostra}.jpg', imagemFace)
-            print(f'Foto {amostra} capturada com sucesso')
-            amostra += 1
+
+                # Salvar a imagem redimensionada na pasta fotos
+                cv2.imwrite(f'fotos/pessoa.{id}.{amostra}.jpg', imagemFace)
+                print(f'Foto {amostra} capturada com sucesso')
+                amostra += 1
 
         # Escrevendo na tela
         cv2.putText(imagem, 'HOMEM', (x, y + l),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 0, 0), 1)
 
     print('Faces capturadas com sucesso')
+
     # exibir a imagem capturada pela webcam
     cv2.imshow('Face', imagem)
     cv2.waitKey(1)
