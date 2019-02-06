@@ -5,9 +5,11 @@ def nomePorId(id):
     if id == 1:
         return 'Paulo'
     elif id == 2:
-        return 'Boiola'
+        return 'Marcelo'
+    elif id == 3:
+        return 'Alex'
     else:
-        return ''
+        'Boiola'
 
 
 # detector de faces
