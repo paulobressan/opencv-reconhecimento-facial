@@ -23,7 +23,7 @@ numeroAmostras = 25
 id = input('Digite o seu identificador: ')
 # controlar o tamanho da imagem
 largura, altura = 220, 220
-print(f'capturando imagens do identificador {id}') 
+print(f'capturando imagens do identificador {id}')
 
 while True:
     # capturar imagem pela webcam
@@ -63,18 +63,19 @@ while True:
         # Se o programa estiver esperando uma tecla E(&) a tecla Q for teclada(comparar com hexadecimal) vamos capturar uma imagem e salva-la
         # o ord converte caracteres para hexadecimal, 0xFF = tecla "q"
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            teste = np.average([10, 20])
+            print(np.average(imagemCinza))
             # average vai calcular a média de pixel da imagem, se o valor for muito baixa, quer dizer que a imagem é mais escura
+            # cada pixel tem o seu rgb e por isso quanto mais perto do 0 for o resultado, mais escura vai ser a imagem, 0 = preto, 255 = branco
             if np.average(imagemCinza) > 110:
                 # imagem redimensionada
                 imagemFace = cv2.resize(
 
-                # redimensionar a imagem para capturar a região detectada
-                imagemCinza[y:y + a, x:x + l], (largura, altura))
+                    # redimensionar a imagem para capturar a região detectada
+                    imagemCinza[y:y + a, x:x + l], (largura, altura))
 
                 # Se não existir a pasta fotos vamos criar
                 if not os.path.isdir('fotos/'):
-                os.mkdir('fotos/')
+                    os.mkdir('fotos/')
 
                 # Salvar a imagem redimensionada na pasta fotos
                 cv2.imwrite(f'fotos/pessoa.{id}.{amostra}.jpg', imagemFace)
