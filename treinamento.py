@@ -3,7 +3,10 @@ import os
 import numpy as np
 
 # classificadores de imagens, esses objetos treinam e criam arquivos treinados com as imagens dadas a eles
-eigenface = cv2.face.EigenFaceRecognizer_create()
+# o num_components é a configuração de quantos eigenfaces vai ser treinado
+# threshold é o limite da distancia de confiabilidade para o algoritimo KNN, quanto menor for o trashold mais precisa e qualidade sera a detecção
+eigenface = cv2.face.EigenFaceRecognizer_create(
+    num_components=50)
 fisherface = cv2.face.FisherFaceRecognizer_create()
 lbph = cv2.face.LBPHFaceRecognizer_create()
 
