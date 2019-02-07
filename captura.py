@@ -72,7 +72,7 @@ while True:
 
                     # redimensionar a imagem para capturar a região detectada
                     imagemCinza[y:y + a, x:x + l], (largura, altura))
-
+    
                 # Se não existir a pasta fotos vamos criar
                 if not os.path.isdir('fotos/'):
                     os.mkdir('fotos/')
